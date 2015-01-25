@@ -1,0 +1,43 @@
+---
+# YAML formatted Platypus file
+# encouraging Free and Open Source Hardware since a little while ago
+- next: [10]
+- start: [1>2, 1>5]
+- end: [1<4, 1<8]
+- key: 1
+  coord: 426,202
+  type: note
+  title: this is a note
+  links: [1-2]
+- key: 2
+  coord: 476,292
+  type: state
+  title: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam dignissim sodales lobortis. Sed sollicitudin molestie sapien, vel blandit amet.
+  links: [1<start, 2>3, 1>8, 1-1]
+- key: 3
+  coord: 419,397
+  type: change
+  links: [1x5, 4>4, 2<2]
+- key: 4
+  coord: 535,433
+  type: state
+  links: [1>end, 4<3]
+- key: 5
+  coord: 422,504
+  type: state
+  links: [1x3, 1<start]
+- key: 6
+  coord: 507,511
+  type: note
+- key: 7
+  coord: 532,467
+  type: note
+- key: 8
+  coord: 677,281
+  type: change
+  title: lorem ipsum dolor sit amet, consectetur
+  links: [1<2, 1>end]
+- key: 9
+  coord: 645,474
+  type: note
+...
