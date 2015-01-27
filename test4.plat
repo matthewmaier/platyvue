@@ -2,42 +2,45 @@
 # YAML formatted Platypus file
 # encouraging Free and Open Source Hardware since a little while ago
 - next: [10]
-- start: [1>2, 1>5, 1>6]
-- end: [1<new, 1<4]
+- start: [1>2, 1>5]
+- end: [1<4]
 - key: 1
-  coord: 371,76
+  coord: 228,71
+
   type: note
   title: this is a note
-  links: [1-2, 1-new]
+  links: [1-2]
 - key: 2
-  coord: 425,162
+  coord: 221,184
+
   type: state
   title: Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nam dignissim sodales lobortis. Sed sollicitudin molestie sapien, vel blandit amet.
   links: [1<start, 1-1, 2>3]
 - key: 3
-  coord: 423,261
+  coord: 366,280
+
   type: change
   links: [1x5, 4>4, 2<2]
 - key: 4
-  coord: 507,308
+  coord: 471,246
+
   type: state
   links: [1>end, 4<3]
 - key: 5
-  coord: 408,329
+  coord: 206,327
+
   type: state
   links: [1x3, 1<start]
 - key: 6
   coord: 498,422
   type: note
-  links: [1-start]
 - key: 7
   coord: 404,434
   type: note
 - key: 8
-  coord: 
-  type: 
+  coord: 465,392
+  type: note
 - key: 9
   coord: 386,392
   type: note
-  links: [1-new]
 ...
