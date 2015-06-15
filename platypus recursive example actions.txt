@@ -1,0 +1,58 @@
+newFil, untitled.plat
+newDoc, untitled.plat, 0
+newRec, untitled.plat?doc=0, 0
+newTag, untitled.plat?doc=0&rec=0, versionYAML: YAML v1.2
+newTag, untitled.plat?doc=0&rec=0, versionPlat: platypus v1
+newDoc, untitled.plat, 1
+newRec, untitled.plat?doc=1, 0
+newTag, untitled.plat?doc=1&rec=0, next: 1
+
+state: raw materials
+change: actions
+
+-- # platyus v1
+doc: 0
+rec: 0
+  versionYAML: YAML v.12
+  versionPlat: platypus v1
+rec:
+  type: state
+  name: record
+  open: "rec: "
+  close: return
+rec: 1
+  type: state
+  name: node_state
+  open: "  type: state"
+  close: return
+rec: 2
+  type: state
+  name: node_change
+  open: "  type: change"
+  close: return
+rec: 4
+  type: state
+  name: pointer
+  open: "  point: ["
+  close: ["]", return]
+rec: 5
+  type: state
+  name: edge_undirected
+  open: "  undirected: ["
+  close: ["]", return]
+rec:
+  type: state
+  name: edge_loop
+  open: "  loop: ["
+  close: ["]", return]
+rec: 
+  type: state
+  name: edge_directed
+  open: "  directed: ["
+  close: ["]", return]
+...
+
+platyvue logic reads platypus definition file
+uses states as raw materials
+uses changes as actions
+the base case of recursive documentation is when all records are states

@@ -1,0 +1,210 @@
+something, anything, has changed
+therefore, refill the datagrid, because I'm a barely adequate programmer
+refill, totally from scratch, no matter what state it's in
+counter=1
+repeat for each rec
+ if trail is empty then
+ put rec summary in dgData
+ "+ " & type & title (if neither is empty)
+ counter + 1
+ else (follow trail)
+ (anything in the trail means open the rec)
+ -- title
+ 
+ -- type
+ -- links
+ put trail in tTheTrail
+ end if
+end repeat
+
+! do this in userOpenPlat to seed the process
+sort rec keys
+start tCount at 1
+repeat for each rec key
+ put tCount & rec key & return after nowTreeIndex
+end repeat
+
+user clicks on a line, put into addTreeIndex
+
+put nowTreeIndex into oldTreeIndex
+repeat for each line in oldTreeIndex
+if item 1 = addTreeIndex then
+
+-- can't do it this way
+-- if it follows a link from rec 1 to rec 3, then to rec 5 because 3 is open
+-- when it's done, and gets through 4, and gets to 3 as a seed
+-- 3 will still say open, so it'll be open twice
+-- need an array tracking one or more user-choosen paths
+-- build new array; display everything in that new array
+-- seed it with all recs from workingDoc
+-- when user opens a list, move that data to the new array
+-- can probably record all with numeric keys; sort in order
+
+array[doc][rec][addy][kind]=file: or web or ftp:
+file:
+array[doc][rec][addy][path]=drive/folder or domain/folder
+pFile
+array[doc][rec][addy][query][doc]=num
+tDoc
+array[doc][rec][addy][query][rec]=num
+tRec
+array[doc][rec][addy][query][tag]=text
+tTag & tValue
+array[n][0][addy]=document address
+
+create/read/update/delete+fil/doc/rec/tag
+elements
+- file
+- document
+-- 0: for automatically documenting how the developer documented their project
+-- 1-n: for each subsequent version of the documentation of the project
+- record
+-- 0: for metadata
+-- 1-n: for each piece of documentation information
+- tag
+-- pointer: one or more URIs; all of the other records this one is linked to
+-- start: a pseudo-record; lists all of the records linked to start; defines beginning of scope
+-- end: a pseudo-record; lists all of the records linked to end; defines limit of scope
+-- state: an intuitive description of a timeless thing
+-- change: an intuitive description of an activity; how one state becomes another
+-- lieu: an alternative to the default link(s); anything without this is assumed to be required
+-- weight: number; a multiple of this link; more than one of this is required or provided
+-- coord: pair of numbers; origin is upper left, positive to right and down
+-- bond: simple link, undirected
+-- flow: a link from this to that, states are changing
+-- loop: a link out and back, gets what it gives
+-- title: user readable sentence
+-- body: user readable narrative
+
+user
+1) open platyvue
+2) open platypus OR add record
+3) add record OR add tag
+4) edit tag
+
+array[0]=doc 0 array (platyvue-generated documentation of project documentation)
+array[0][0]=doc 0, rec 0 array (metadata about this documentation)
+array[0][0][start]=list of starting nodes
+array[0][0][end]=list of ending nodes
+array[0][1]=doc0, rec 1 array (first element)
+array[0][1][type]=state/change/directed/undirected
+array[0][1][pointer]=list of URIs (http://www.abc.com/folder/file.plat?doc=1&rec=1)
+
+# recursively follow the tree out from a seed node
+build a temporary array from node's array address
+temp[doc num][rec num]=everything from working array
+go to key array[doc][rec][pointer]
+for each item in the list (1,2,3,n), put the target into array[doc][rec][pointer][1]/[2]/[3]/[n]
+- if it's a link, the type matters
+- if it's another record, copy that array under array[doc][rec][pointer][n]
+
+tree[1][tree]=+
+tree[1][display]=rec num
+tree[2][tree]=+
+tree[2][display]=nodeString
+tree[3][display]=- & type: & [type]
+tree[4][display]="  " & title: & [title]
+tree[5][display]="  " & body: & [body]
+tree[6][display]="  " & coord: & [coord]
+tree[7][display]=- & link
+tree[8][display]="  " & "  " & symbol & nodeString
+tree[9][display]="  " & "  " & symbol & nodeString
+
++ 1
++ C dolor sit
+- type: state
+  title: something
+  body: lorem ipsum dolor sit amet
+  coord: 100,300
+  - < C dolor sit
+    > C 8
+- type: change
+  + link
+
+
+--- # documentation of the documentation ---------------------------------------
+doc 0: # doc 0
+  rec 0: # rec 0
+    start: [1]
+    end: [5]
+#metadata about the documentation of the documentation
+  rec 1:
+    type: state
+    pointer: [start, 2]
+# starting from scratch, or a seed project...
+  rec 2:
+    type: directed
+    pointer: [1, 3]
+  rec 3:
+    type: change
+# ...make all these changes...
+    body: new state, 1
+          new title, 1, "hammer"
+          new state, 2
+          new title, 2, "nail"
+          new state, 3
+          new title, 3, "board"
+          new state, 4
+          new title, 4, "shelf"
+    pointer: [2, 4]
+  rec 4:
+    type: fromTo
+    pointer: [3, 5]
+  rec 5:
+    type: state
+    pointer: [4, 6, end]
+  rec 6:
+# ...and you'll end up with doc 1
+    type: bond
+    pointer: [5, ?doc=1]
+--- # documentation of the project ---------------------------------------
+doc 1:
+  rec 0:
+    next: [6]
+    pointer: [5]
+rec: 1
+  type: state
+  title: hammer
+rec: 2
+  type: state
+  title: nail
+rec: 3
+  type: state
+  title: board
+rec: 4
+  type: state
+  title: chair
+rec: 5
+  pointer: [?doc=1, ?doc=0&rec=6]
+# metadata about the documentation of the project
+--- # second version of the project documentation ---------------------------------------
+doc: 2
+--- # third version of the project documentation ---------------------------------------
+doc: 3
+... # end of file ......................................................................
+
+# display
++ start
++ end
++ state 1
+- state 2
+  + start
+  + > change 4
+  + > change 5
+- state 3
+  + < change 4
+  + > change 7
+  - > change 5
+    + < state 2
+    - < state 3
+    + > state 6
++ change 4
+  + state 1
+  + state 2
+  - state 3
+    
++ change 5
++ state 6
++ change 7
++ state 8
+- state 9
