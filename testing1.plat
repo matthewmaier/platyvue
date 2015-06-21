@@ -1,0 +1,1 @@
+{"2":{"step":"3,1","myTurn":"1,1"},"3":{"myTurn":"1,1","myStep":"2,1","type":"state"},"0":{"lastKey":6},"5":{"step":"6,4","myTurn":"4,4"},"1":{"act":"newItem","turn":"2,1\n3,1"},"4":{"act":"newItem","turn":"5,4\n6,4"},"6":{"myTurn":"4,4","myStep":"5,4","type":"change"}}
