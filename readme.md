@@ -1,31 +1,33 @@
 ## Synopsis
 
-Platyvue manipulates the Platypus documentation schema. The GUI makes it easy to understand and edit a network (nodes and links) of snippets of information. Ultimately you can manage all of the files relevant to a project (turn something into something else) using Platypus/vue and collaborate with someone through the internet. 
+Platyvue manipulates the Platypus documentation schema. This GUI makes it easy to understand and edit a network (nodes and links) of snippets of information. Ultimately you can manage all of the files relevant to a project (how to turn something into something else) using Platypus/vue and collaborate with someone through the internet. 
 
 ## Code Example
 
-Show what the library does as concisely as possible, developers should be able to figure out **how** your project solves their problem by looking at the code example. Make sure the API you are showing off is obvious, and that your code is short and concise.
+I'll come up with a good example later.
 
 ## Motivation
 
-A short description of the motivation behind the creation and maintenance of the project. This should explain **why** the project exists.
+I want to collaborate on hardware projects with other people wherever they happen to be. That's easier to do on software projects because computers follow instructions perfectly. In a hardware project the human is the compiler, so it's harder to write the instructions. If we can make it easy to discover and replicate tangible things we can extend the benefits of open source to everything outside of the computer.
 
 ## Installation
 
-Provide code examples and explanations of how to get the project.
+Download the community (open source) version of Livecode (version 7) http://livecode.com/download/
+Open the "platyvue alpha.livecode" stack in the IDE
+In Platyvue, open the "shepard example.plat" file
 
 ## API Reference
 
-Depending on the size of the project, if it is small and simple enough the reference docs can be added to the README. For medium size to larger projects it is important to at least provide a link to where the API reference docs live.
+No API yet. You can help with that.
 
 ## Tests
 
-Describe and show how to run the tests with code examples.
+Also no tests. Definitely help with that.
 
 ## Contributors
 
-Let people know how they can dive into the project, include important links to things like issue trackers, irc, twitter accounts if applicable.
+All participation welcome! I self-taught so that I could get this prototype built and validate the idea. There's a ton I don't know and a lot of stuff I'm skipping over. Ultimately I think this could become a standard with a big community developing and using it for all sorts of instructions.
 
 ## License
 
-A short snippet describing the license (MIT, Apache, etc.)
+LGPLv3 Using Platypus will make the world better. I don't see any reason to place restrictions on usage.
