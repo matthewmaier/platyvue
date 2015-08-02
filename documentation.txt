@@ -1,0 +1,152 @@
+ISSUES
+- process trim tags and CLOSE header in kahnSort and textInstr
+-- trim tags aren't being visited
+-- follow trim, mark nodeY visited, on last bulk tag, add nodeZ to topoSort again
+-- when rendering, if same node appears twice, preced with CLOSE tag
+- can't copy the text instructions to the clipboard, at least not when open in the IDE
+- select in graphicNetwork
+-- each node has code that allows selecting or dragging
+-- the links need similar code
+-- probably need a behavior-type script in graphicNetwork like rTree has
+- adding a dive link to the project node blanks out the instructions. it's expected, but could be confusing
+-- adding a complimentary rise link brings the instructions back
+-- maybe add a placeholder message to the instructions like "blank; create a rise link"
+- filePath field doesn't scale when the window resizes
+- I think sExpanded is silently assuming the current doc
+- default coodinates for floorRect
+-- reset view to default x,y when opening/new
+-- reset scale
+-- save x,y & scale to style file(?)
+- dive/rise shouldn't be rendered as straight lines
+-- repace hack that overwrites project title node's coord for dive/rise links in calcLinkCoord
+-- maybe a link that passes through more than one point
+-- maybe a box that contains the relevant nodes
+- userInfo, check to be sure input is formatted correctly
+- maybe put links under nodes in rTree's nodes instead of at the same level as nodes
+- render is only putting the active doc into rTree; consider a rootnode for each doc in main[]
+-- probably not, since the documents are separate, but maybe
+- maybe initialize doc with state/change/bond/flow/hide/etc instead of rewriting them for each item
+
+FEATURES
+- convert pointers to full URL
+- architect the graphicalNetwork the same as rTree
+-- pass it an array describing everything it's supposed to do in one formatted place
+-- at the moment it's being calculated piecemeal
+- allow user to change zoom level in graphicNetwork
+- add link weights
+- allow intermediate points the link has to be drawn through
+- allow for direct changes rather than having to delete then create something new
+-- use right click popup context menu
+- provide more options for what to do when hiding a step
+-- allow user to hide more than one item at a time
+- modify userState/Change/Bond/Flow/Dive/Rise
+-- instead of just creating a new step, change an existing step to a different type
+-- if same type clicked again, reverse link direction
+-- this would mean giving the user a way to clear the current selection
+- allow for more than one open doc at a time
+-- userNew is empty
+-- sNowDoc always equals 1
+-- automatically calls for a new blank doc when active doc closes
+- allow drag of multiple nodes simultaneously
+
+GLOSSARY
+- step: a node or a link
+-- node
+--- state: a thing that is true at an instant in time
+--- change: an action, over a period of time, that converts from one state to another
+-- link
+--- bond: undirected link in the project dimension
+--- flow: directional link in the project dimension; sequence of steps
+---- next: forward
+---- prev: backwards
+--- dive: directional link in the scope dimension; from summary to detailed; from container node to start of contained flowed nodes
+---- read: forwards
+---- skim: backwards
+--- rise: directional link in the scope dimension; from detailed to summary; from end of contained flowed nodes to container node
+---- trim: forwards
+---- bulk: backwards
+- tag: a piece of information attached to a step
+- turn: an historical record of a function that altered the platypus file (basically a step along the time dimension instead of the project dimension)
+- types: state/change, bond/flow(next/prev), dive(read/skim)/rise(trim/bulk)
+- dimensions: project (next/prev state/change), time (turn/myTurn), scope (dive/rise, read/skim, trim/bulk)
+- platypus
+-- file: a list of documents
+-- document: a list of records
+-- record: whole number keys from 1 to infinity, with data
+-- pointer: string identifying another record
+--- positive: #,# (target record),(record of turn that created this pointer)
+--- negative: -#,# (EX: if 1,2 and -1,3 are in the same list they cancel out)
+
+KEYWORDS
+- act
+- coord
+- myStep
+- myTurn
+- newItem
+- redo
+- state
+- step
+- title
+- turn
+- type
+- undo
+- userRedo
+- userUndo
+
+PLATYPUS DATA STRUCTURE
+- system > file > document > record > tag > data
+- any number of systems; any number of .plat files on system; unlimited number of documents in single .plat file (counting up from 1); unlmited number of records in single document (counting up from 1); any number of tags in record; any amount of text data in tags
+- nothing is recorded directly in platypus that can't be represented as a string 
+- working structure is a nested array; should be saved as human readable JSON or YAML string
+- platypus uses a network of records and pointers to allow unlimited links to single record of information; platyvue uses the records/pointers to build a network of nodes and links that the user works with
+- full pointer: http://www.foobar.com/myproject.plat?doc=1&rec=17&tag=title (another server)
+--------------- c:/documents/myproject/foobar.plat?doc=4&rec=72 (another drive)
+--------------- doc=7&rec=67 (another document)
+--------------- 29 (another record in same document)
+- metadata
+-- record 0 used for data like lastKey (the highest record number used), file paths, version numbers, etc
+- system generated record tags
+-- step/turn: first keyword, like index.html; data is pointers
+-- myTurn/myStep: this record is attributed to that turn or step
+
+sGraphics is an array with important information for the graphicalNetwork
+[doc][rec][longID] (for node & link)
+[doc][rec][coord]=1,2(for node)
+[doc][rec][links]=1,2,3(for node)
+[doc][rec][type]=string (for link)
+[doc][rec][Xnode]=1(for link)
+[doc][rec][Znode]=1(for link)
+all graphics (identified by longID) have these properties
+longID has cRecKey=# and points and loc(ation)
+
+IMPORTANT NOTES ABOUT PLATY-PUS
+- it's a network (nodes/links) built out of another network (records/pointers)
+-- this allows information to be categorized more than once (project/history/scope...)
+-- but only be recorded once; data can be a child of a step and a turn simultaneously
+- by design, nothing is ever deleted
+-- every change (even undo/redo) creates a new turn
+-- the pointer to data can be negated in the future, a negated pointer is ignored
+-- steps with all negated pointers are ignored (effectively hidden)
+-- data will not be displayed if no step points to it (effectively hidden)
+-- the only way to actually delete something is to edit the raw .plat file outside of platypus
+- there shouldn't be more than one link between the same two nodes
+- dimensions can intersect and affect the same record
+-- the project dimension is states and changes linked by flow
+-- the time dimension is from record 1 in the past, thru turns, to the present status
+-- the scope dimension is dive into a node to find many nodes, rise up to the container node
+--- scope is higher (more abstract) to lower (more detailed)
+--- scoping requires a loop made out of dive, thru the project dimension, then rise back to original node
+- all turns produce at least one new record (other than their own)
+-- usually the new record(s) is new information for the network
+-- if not, then it's a pointer to the pre-existing thing that the turn altered
+-- also, the turn's pointer(s) can be negated/positied when the turn is undone/redone
+-- the link tags are a bit redundant, but it keeps the "type" tag consistent for all steps
+
+IMPORTANT NOTES ABOUT PLATY-VUE
+- the select or drag in graphicNetwork relies on a "wait for 100" line; might not work everywhere
+- savedField is mostly controlled from the script attached to the File button
+- easyJSON is modified to treat all arrays like they have non-numeric keys; maintains array sort
+- easyJSON now has a couple short commands because dispatch doesn't work with functions, only commands
+- commented out pass preOpenStack message in rTreeEngine stack script. reasons.
+- using dive/rise to contain more detailed nodes only allows one set. If a node is a container, all nodes linked by dive/rise are assumed to be in one set; you can't have two different sets.
+- A container node shows up twice in the topological sort. First when the sort gets to it for the first time and again when all of its contained steps have been visited.
