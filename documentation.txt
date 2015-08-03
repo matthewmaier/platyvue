@@ -1,31 +1,16 @@
 ISSUES
-- process trim tags and CLOSE header in kahnSort and textInstr
--- trim tags aren't being visited
--- follow trim, mark nodeY visited, on last bulk tag, add nodeZ to topoSort again
--- when rendering, if same node appears twice, preced with CLOSE tag
+- maybe put links under nodes in rTree's nodes instead of at the same level as nodes
 - can't copy the text instructions to the clipboard, at least not when open in the IDE
-- select in graphicNetwork
--- each node has code that allows selecting or dragging
--- the links need similar code
--- probably need a behavior-type script in graphicNetwork like rTree has
-- adding a dive link to the project node blanks out the instructions. it's expected, but could be confusing
--- adding a complimentary rise link brings the instructions back
--- maybe add a placeholder message to the instructions like "blank; create a rise link"
 - filePath field doesn't scale when the window resizes
 - I think sExpanded is silently assuming the current doc
-- default coodinates for floorRect
--- reset view to default x,y when opening/new
--- reset scale
--- save x,y & scale to style file(?)
 - dive/rise shouldn't be rendered as straight lines
 -- repace hack that overwrites project title node's coord for dive/rise links in calcLinkCoord
 -- maybe a link that passes through more than one point
--- maybe a box that contains the relevant nodes
+-- maybe a box around the contained nodes
 - userInfo, check to be sure input is formatted correctly
-- maybe put links under nodes in rTree's nodes instead of at the same level as nodes
-- render is only putting the active doc into rTree; consider a rootnode for each doc in main[]
--- probably not, since the documents are separate, but maybe
-- maybe initialize doc with state/change/bond/flow/hide/etc instead of rewriting them for each item
+- text instructions is just an export
+-- allow selecting and editing through the instructions display
+-- rewrite to display in a list; maybe a datagrid form
 
 FEATURES
 - convert pointers to full URL
@@ -33,6 +18,9 @@ FEATURES
 -- pass it an array describing everything it's supposed to do in one formatted place
 -- at the moment it's being calculated piecemeal
 - allow user to change zoom level in graphicNetwork
+-- reset view to default x,y when opening/new
+-- reset scale
+-- save x,y & scale to style file(?)
 - add link weights
 - allow intermediate points the link has to be drawn through
 - allow for direct changes rather than having to delete then create something new
