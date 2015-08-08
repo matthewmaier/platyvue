@@ -1,5 +1,5 @@
 ISSUES
-- maybe put links under nodes in rTree's nodes instead of at the same level as nodes
+- when writing a subgraph, what if I want to reference the nodes at a different scope level?
 - can't copy the text instructions to the clipboard, at least not when open in the IDE
 - filePath field doesn't scale when the window resizes
 - I think sExpanded is silently assuming the current doc
@@ -8,11 +8,28 @@ ISSUES
 -- maybe a link that passes through more than one point
 -- maybe a box around the contained nodes
 - userInfo, check to be sure input is formatted correctly
-- text instructions is just an export
--- allow selecting and editing through the instructions display
--- rewrite to display in a list; maybe a datagrid form
+- userFile, I gave up on figuring out absolute-vs-relative paths for files
+-- the application itself is going to run in a folder
+-- the user is probably going to work on thier project in an entirely different folder
+-- they might pull in files from even more different folders
+-- at a minimum, platypus should store the filename&extension
+-- but what if the project has folders? store the relative path? search for the file?
+-- livecode has a lesson converting-an-absolute-path-to-a-relative-path
 
 FEATURES
+- auto select new node when created
+- write interactive instruction view
+-- allow selecting and editing through the instructions display
+-- rewrite to display in a list; maybe a datagrid form, maybe rTree
+- write flow alternatives
+-- at the moment all links are assumed to be necessary
+-- need some kind of boolean to create alternatives
+- create style file
+-- everyone will make slightly different choices in a complex project
+-- need to save those choices, but keep them separate from platypus itself
+- add link weights
+- write bill of materials
+- enable non-text data
 - convert pointers to full URL
 - architect the graphicalNetwork the same as rTree
 -- pass it an array describing everything it's supposed to do in one formatted place
@@ -21,7 +38,6 @@ FEATURES
 -- reset view to default x,y when opening/new
 -- reset scale
 -- save x,y & scale to style file(?)
-- add link weights
 - allow intermediate points the link has to be drawn through
 - allow for direct changes rather than having to delete then create something new
 -- use right click popup context menu
@@ -36,6 +52,10 @@ FEATURES
 -- sNowDoc always equals 1
 -- automatically calls for a new blank doc when active doc closes
 - allow drag of multiple nodes simultaneously
+-- maybe allow shift-select to hilite all intermediate nodes listed in topo sort
+-- drag moves all hilited nodes, not just the node dragged
+- enable area select; all steps inside box
+-- maybe allow a free form select; draw a polygon around or thru whatever you want
 
 GLOSSARY
 - step: a node or a link
