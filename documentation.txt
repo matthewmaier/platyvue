@@ -1,7 +1,8 @@
 ISSUES
+- how did sGraphics get an " " as one of its keys?
+-- noticed when trying to fill the tooltips in render
 - when writing a subgraph, what if I want to reference the nodes at a different scope level?
 - can't copy the text instructions to the clipboard, at least not when open in the IDE
-- filePath field doesn't scale when the window resizes
 - I think sExpanded is silently assuming the current doc
 - dive/rise shouldn't be rendered as straight lines
 -- repace hack that overwrites project title node's coord for dive/rise links in calcLinkCoord
@@ -17,6 +18,13 @@ ISSUES
 -- livecode has a lesson converting-an-absolute-path-to-a-relative-path
 
 FEATURES
+- tags:
+-- flow: weight (how many of attached state into or out of change)
+-- state[lame]: labor (work) /material (consumed) /equipment (returned)
+-- state[whole]: true (solid, indivisible, whole) /false (divisible, fractional, floating point)
+-- change[duration]: duration (time required)
+-- change[series]: true (multiple takes longer) /false (parallel, multiple takes more)
+- maybe timestamp each record? don't have a use for it at the moment
 - auto select new node when created
 - write interactive instruction view
 -- allow selecting and editing through the instructions display
