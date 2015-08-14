@@ -1,4 +1,8 @@
 ISSUES
+- resource calculations don't respect labor/material/equipment difference
+- the links overlap and it's impossible to select one on the bottom
+-- maybe if you click on an already selected link it moves to the bottom to force them to rotate position? maybe double click a link moves it to the bottom.
+- instructions should probably mention weight, LAME, etc
 - how did sGraphics get an " " as one of its keys?
 -- noticed when trying to fill the tooltips in render
 - when writing a subgraph, what if I want to reference the nodes at a different scope level?
@@ -24,6 +28,7 @@ FEATURES
 -- state[whole]: true (solid, indivisible, whole) /false (divisible, fractional, floating point)
 -- change[duration]: duration (time required)
 -- change[series]: true (multiple takes longer) /false (parallel, multiple takes more)
+- maybe use popup to create a right-click menu for entering information
 - maybe timestamp each record? don't have a use for it at the moment
 - auto select new node when created
 - write interactive instruction view
@@ -135,6 +140,14 @@ sGraphics is an array with important information for the graphicalNetwork
 all graphics (identified by longID) have these properties
 longID has cRecKey=# and points and loc(ation)
 
+sMainShort is an array that simplifies Platypus into a normal adjacency list
+[doc][rec][type]=string (state, change, etc)
+[doc][rec][read/bulk/skim/next/prev/etc]=return delimited list of recs
+[doc][rec][info]=string of all non-system tag:data pairs
+
+sResources is an array about resources (duh)
+[doc][input/output][rec]=comma-delimited recs to multiply weights, return-delimited to add weights
+
 IMPORTANT NOTES ABOUT PLATY-PUS
 - it's a network (nodes/links) built out of another network (records/pointers)
 -- this allows information to be categorized more than once (project/history/scope...)
@@ -166,3 +179,4 @@ IMPORTANT NOTES ABOUT PLATY-VUE
 - commented out pass preOpenStack message in rTreeEngine stack script. reasons.
 - using dive/rise to contain more detailed nodes only allows one set. If a node is a container, all nodes linked by dive/rise are assumed to be in one set; you can't have two different sets.
 - A container node shows up twice in the topological sort. First when the sort gets to it for the first time and again when all of its contained steps have been visited.
+- if flow is not of the pattern state > change > state then calculated results probably won't make sense
