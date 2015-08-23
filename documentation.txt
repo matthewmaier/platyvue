@@ -1,33 +1,51 @@
 ISSUES
-- resource calculations don't respect labor/material/equipment difference
+- I think there are a lot of excessive empty tags in the recs in sResources
+- no scopeRef info
+-- 10,31,48,55,58,65,70,72,83,85
+-- 48,55,70,85 = link
+- check to make sure user can't put a prev link into an input node or a next link into an output node
+- resource calculations don't respect material/equipment difference
+-- equipment distinguished by having skim and next and trim, not prev
+-- calculation depends on change series/parallel
+- not sure how to incorporate changes in scope into the resouce calculation
+-- scope means it's the same node, but more specific information
+-- not sure exactly what that means in a project or between projects
+-- at the moment subgraphs are just balanced independently
+-- probably need to have links crossing scope levels
 - the links overlap and it's impossible to select one on the bottom
 -- maybe if you click on an already selected link it moves to the bottom to force them to rotate position? maybe double click a link moves it to the bottom.
-- instructions should probably mention weight, LAME, etc
-- how did sGraphics get an " " as one of its keys?
--- noticed when trying to fill the tooltips in render
-- when writing a subgraph, what if I want to reference the nodes at a different scope level?
+- how did sGraphics get an " " as one of its keys? noticed when trying to fill the tooltips in render
 - can't copy the text instructions to the clipboard, at least not when open in the IDE
 - I think sExpanded is silently assuming the current doc
-- dive/rise shouldn't be rendered as straight lines
--- repace hack that overwrites project title node's coord for dive/rise links in calcLinkCoord
--- maybe a link that passes through more than one point
--- maybe a box around the contained nodes
+- repace hack that overwrites project title node's coord for dive/rise links in calcLinkCoord
 - userInfo, check to be sure input is formatted correctly
 - userFile, I gave up on figuring out absolute-vs-relative paths for files
 -- the application itself is going to run in a folder
 -- the user is probably going to work on thier project in an entirely different folder
 -- they might pull in files from even more different folders
--- at a minimum, platypus should store the filename&extension
+-- at a minimum, platypus should store the filename & extension
 -- but what if the project has folders? store the relative path? search for the file?
 -- livecode has a lesson converting-an-absolute-path-to-a-relative-path
 
 FEATURES
-- tags:
--- flow: weight (how many of attached state into or out of change)
--- state[lame]: labor (work) /material (consumed) /equipment (returned)
--- state[whole]: true (solid, indivisible, whole) /false (divisible, fractional, floating point)
--- change[duration]: duration (time required)
--- change[series]: true (multiple takes longer) /false (parallel, multiple takes more)
+- handle more supply balancing options
+-- right now all supplying links are increased by the same gravity
+-- it could be possible to produce less or zero excess by "solving" all the available supply options; increase gravity on each supply action differently to minimize supply/demand differential
+- allow user to specify different gravity sharing among suppliers
+-- if supply needs to be increased, and there is more than one supplier of that state, it's possible for them to share the gravity unequally
+- use style file to specify series/parallel change
+-- use subgraph instead of tags?
+-- if you have to do it 4 times, you could do 4-series, or 4-parallel, or 2-series in parallel, etc.
+-- the math for input/output depends on which approach the user wants to choose. there's a different equipment max for each, and in a project mgmt sense different resources need to be available at different times.
+-- also, a subgraph in a change can describe a multi-node process that can be done in parallel. at the moment series/parallel calculations only work for a single change node, not for multiple nodes, but that scope could be a subgraph and the one node could be done in parallel
+- display dive/rise more intuitively
+-- maybe a new, sightly smaller border for the graph group with the container node embedded in it
+-- maybe an outline around the contained nodes
+-- maybe multi-segment dive/rise links
+- project management
+-- people and labor
+-- time (duration tag with units)
+-- PERT, slack, critical path, GANTT chart, etc
 - maybe use popup to create a right-click menu for entering information
 - maybe timestamp each record? don't have a use for it at the moment
 - auto select new node when created
@@ -37,11 +55,10 @@ FEATURES
 - write flow alternatives
 -- at the moment all links are assumed to be necessary
 -- need some kind of boolean to create alternatives
+-- use style file; don't include idle alternatives in sMainShort; all existing logic will continue to work
 - create style file
 -- everyone will make slightly different choices in a complex project
 -- need to save those choices, but keep them separate from platypus itself
-- add link weights
-- write bill of materials
 - enable non-text data
 - convert pointers to full URL
 - architect the graphicalNetwork the same as rTree
@@ -97,6 +114,11 @@ GLOSSARY
 -- pointer: string identifying another record
 --- positive: #,# (target record),(record of turn that created this pointer)
 --- negative: -#,# (EX: if 1,2 and -1,3 are in the same list they cancel out)
+- material vs equipment: all states are material (used up during the project) unless they have both dive and rise links to the container node. In that case they're equipment (not used up during the project)
+- series: true/false, unspecified is true; means calculations assume multiples of this change happen one after the other; false (parallel) means calculations assume multiples of this change happen at the same time. This affects the maximum amount of equipment necessary. The parallel calculation only works for one change node, not for  a series of nodes.
+- action: A change and all the states linked to it; the smallest unit of a platypus project. state > change > state. States belong to more than one action.
+- weight: links are assumed to have a weight of 1. A higher weight can be assigned. State >5> change means the change demands 5 copies of that state. Change >5> state means the state supplies 5 copies of that state. Dive/rise links can also have weights, which communicates outside of the project. A dive weighted 5 means there are 5 of that state supplied to the project. A rise weighted 5 means 5 copies of that state are demanded of the project. 
+- gravity: link weight can be modified by gravity, which is not assigned, it's calculated. If an action supplies 1 state, but the following action demands 2 copies, then the preceeding action's gravity is increased from 1 (default) to 2, which modifies all of that action's link weights. The preceeding action would then be demanding twice as many copies of its supply states. 
 
 KEYWORDS
 - act
@@ -144,9 +166,14 @@ sMainShort is an array that simplifies Platypus into a normal adjacency list
 [doc][rec][type]=string (state, change, etc)
 [doc][rec][read/bulk/skim/next/prev/etc]=return delimited list of recs
 [doc][rec][info]=string of all non-system tag:data pairs
+[doc][rec][weight]=user defined multiple on a link
 
-sResources is an array about resources (duh)
-[doc][input/output][rec]=comma-delimited recs to multiply weights, return-delimited to add weights
+sResources is an array about resources (duh); calculated values
+[doc][rec][gravity]=number to multiply the weight by to get total supply/demand
+[doc][rec][excess]=number of supply not demanded
+[doc][rec][totSupply]=number total copies of state supplied
+[doc][rec][totDemand]=number total copies of state demanded
+[doc][rec][scopeRef]=list (comma & cr) #,position 1/2/3...n,top/in/thru/out record can have multiple lines like 1,thru&cr&2,top with 1 meaning highest reference level in this document and 0 meaning it isn't related to a reference level
 
 IMPORTANT NOTES ABOUT PLATY-PUS
 - it's a network (nodes/links) built out of another network (records/pointers)
@@ -170,6 +197,8 @@ IMPORTANT NOTES ABOUT PLATY-PUS
 -- if not, then it's a pointer to the pre-existing thing that the turn altered
 -- also, the turn's pointer(s) can be negated/positied when the turn is undone/redone
 -- the link tags are a bit redundant, but it keeps the "type" tag consistent for all steps
+- you can record that a change should be done more than once, but not on the output of the change. instead, record that the state the change produced is required for the next change in greater numbers than the previous change produced. the change should be one indivisible action, which can be done more than once.
+- 
 
 IMPORTANT NOTES ABOUT PLATY-VUE
 - the select or drag in graphicNetwork relies on a "wait for 100" line; might not work everywhere
@@ -180,3 +209,4 @@ IMPORTANT NOTES ABOUT PLATY-VUE
 - using dive/rise to contain more detailed nodes only allows one set. If a node is a container, all nodes linked by dive/rise are assumed to be in one set; you can't have two different sets.
 - A container node shows up twice in the topological sort. First when the sort gets to it for the first time and again when all of its contained steps have been visited.
 - if flow is not of the pattern state > change > state then calculated results probably won't make sense
+- supplyDemand and gravity balancing assume infinite supply is available. that will have to change when the user can define finite resources
